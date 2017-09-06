@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb')
+const MongoClient = require('mongodb');
 
 // here we create the url connection string that the driver needs
 //const getMongoURL = (options) => {

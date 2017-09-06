@@ -7,8 +7,8 @@ const config = require('./config/')
 const mediator = new EventEmitter()
 
 // verbose logging when we are starting the server
-console.log('--- Movies Service ---')
-console.log('Connecting to movies repository...')
+console.log('--- ROBOTRADER Service ---')
+console.log('Connecting to stocks repository...')
 
 // log unhandled execpetions
 process.on('uncaughtException', (err) => {
@@ -20,11 +20,11 @@ process.on('uncaughtRejection', (err, promise) => {
 
 // event listener when the repository has been connected
 mediator.on('db.ready', (db) => {
-  let rep
+  //let rep 
   repository.connect(db)
     .then(repo => {
       console.log('Repository Connected. Starting Server')
-      rep = repo
+     // rep = repo
       return server.start({
         port: config.serverSettings.port,
         repo
@@ -43,5 +43,7 @@ mediator.on('db.ready', (db) => {
   
   // we load the connection to the repository
   config.db.connect(config.dbSettings, mediator)
+  
+
   // init the repository connection, and the event listener will handle the rest
   mediator.emit('boot.ready')

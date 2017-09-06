@@ -1,0 +1,178 @@
+#%RAML 1.0
+---
+title: robotrader REST API
+version: v1
+protocols: [ HTTP, HTTPS ]
+baseUri: http:/api.robotrader.com/{version}
+mediaType: application/json
+securitySchemes: 
+    oauth_2_0: !include securitySchemes/oauth_2_0.raml
+types:
+    Gist: !include types/gist.raml
+    Gists: !include types/gists.raml
+resourceTypes: 
+  collection: !include types/collection.raml
+traits:
+securedBy: [ oauth_2_0 ]
+
+
+
+/authn:
+  /login:
+    post:
+      description: Get a new login token
+      body:
+        application/json:
+          schema: loginCredentials
+      responses:
+        201:
+          headers:
+            x-okapi-token:
+          body:
+            application/json:
+              schema: loginCredentials
+        
+
+
+
+/auth:
+    /signin:
+        description: Implements basic sign-in / login : username / password 
+        post:
+            description: User SignIn
+            queryParameters:
+                username:
+                    description: "User name for service access"
+                    required: true
+                    minLength: 8
+                    type: string
+                    example: "Mike"
+                password:
+                    description: "User password"
+                    required: true
+                    minLength: 8
+                    type: string
+                    example: "MayersMayers"
+        responses:
+            201:
+                headers:
+                    x-okapi-token:
+                body:
+                    application/json:
+                        type: 
+                            loginCredentials:
+                                {
+                                    "title": "Login Credentials Schema",
+                                    "type": "object",
+                                    "properties": {
+                                        "username": {
+                                        "type": "string"
+                                        },
+                                        "userId": {
+                                        "type": "string"
+                                        },
+                                        "password": {
+                                        "type": "string"
+                                        }
+                                    }
+                                }
+                        example:
+                            {
+                                "username": "Mike",
+                                "password": "pass",
+                                "userId": "550e8400-e29b-41d4-a716-446655440000"
+                            }
+            200:
+                body: 
+                    application/json:
+                        type: loginCredentials
+                        example :
+                            { "message": "User Signed In" }
+            404: 
+                body:
+                    application/json:
+                        example:
+                            { "message": "User not found" }
+
+            400:
+                description: "Bad request"
+                body:
+                    tapplication/json:
+                        example:
+                            { "message": "Bad request" }
+            500:
+                description: "Internal server error"
+                body:
+                application/json:
+                        example:
+                            { "message": "Internal server error" }
+
+    /signout:
+        description: 
+        get:
+        description: User SignOut
+        responses:
+            200:
+                body: 
+                    application/json:
+                        example :
+                            { "message": "User Signed Out }
+            404: 
+                body:
+                    application/json:
+                        example:
+                            { "message": "User not found" }
+
+/users:
+    get:
+        description: Collection of available users in robotrader
+        queryParameters:
+            userName:
+                description: "The Full Name of the user"
+                required: true
+                minLength: 3
+                example: "Pepe Gutierrez"
+        responses:
+            200:
+                body: 
+                    application/json:
+                        example :
+                            {
+                                "users" [
+                                    {
+                                        "userId": "550e8400-e29b-41d4-a716-446655440000",
+                                        "userFullName": "John Doe"
+                                    },
+                                    {
+                                        "userId": "550e8400-e29b-41d4-a716-446655440111",
+                                        "userFullName": "Mike Mayers"
+                                    },
+                                    {
+                                        "userId": "550e8400-e29b-41d4-a716-446655440222",
+                                        "userFullName": "Michael Jordan"
+                                    }
+                                ]
+                            }
+    /{userId}:
+        description: User Entity
+        get:
+            description: Get the user with 'userId = {userId}'
+            responses:
+                200:
+                    body:
+                        application/json:
+                            example: 
+                                {
+                                    "userId": "550e8400-e29b-41d4-a716-446655440000",
+                                    "userFullName": "Michael Jordan",
+                                    "userLocation": "Chicago",
+                                    "userAvatar": {
+                                        "avatarId": "183100e3-0e2b-4404-a716-66104d440550",
+                                        "imageURL": "http://upload.wikimedia.org/wikipedia/en/a/a7/Random_Access_Memories.jpg"
+                                    }
+                                }
+                404: 
+                    body:
+                        application/json:
+                            example:
+                                {"message": "User not found"}

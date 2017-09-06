@@ -6,7 +6,7 @@ because this can hide database credentials, server parameters, etc.
 */
 // database parameters
 const dbSettings = {
-    db: process.env.DB || 'movies',
+    db: process.env.DB || 'robotrader',
     user: process.env.DB_USER || 'cristian',
     pass: process.env.DB_PASS || 'cristianPassword2017',
     repl: process.env.DB_REPLS || 'rs1',
@@ -50,4 +50,11 @@ const dbSettings = {
     port: process.env.PORT || 3000
   }
   
+  //module.exports = {
+  //  
+  //      'secret': 'ilovescotchyscotch',
+  //      'database': 'mongodb://noder:noderauth&54;proximus.modulusmongo.net:27017/so9pojyN'
+    
+  //};
+
   module.exports = Object.assign({}, { dbSettings, serverSettings })

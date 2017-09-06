@@ -4,6 +4,7 @@ const express = require('express')
 const morgan = require('morgan')
 const helmet = require('helmet')
 const movieAPI = require('../api/movies')
+const authorizationAPI = require('../api/auth')
 
 const start = (options) => {
   return new Promise((resolve, reject) => {
@@ -25,6 +26,11 @@ const start = (options) => {
     
     // we add our API's to the express app
     movieAPI(app, options)
+    authorizationAPI(app, options)
+
+    app.get('/', function(req, res) {
+      res.send('ROBOTRADER API');
+    });
     
     // finally we start the server, and return the newly created server 
     const server = app.listen(options.port, () => resolve(server))
